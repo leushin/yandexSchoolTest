@@ -1,0 +1,20 @@
+body {
+    padding: 50px;
+}
+
+input, button {
+    display: block;
+    width: 300px;
+    margin: 10px auto;
+}
+
+#resultContainer {
+    width: 300px;
+    height: 150px;
+    margin: 10px auto;
+    background: #F2F0FC;
+}
+
+.error {
+    border: 1px solid red;
+}
