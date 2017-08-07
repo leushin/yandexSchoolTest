@@ -163,6 +163,7 @@ var MyForm = {
      * @public
      */
     submit: function() {
+
         this._clearErrorClass();
         var result = this.validate();
 
@@ -176,5 +177,8 @@ var MyForm = {
 };
 
 (function() {
-    document.getElementById('submitButton').addEventListener('click', function() { MyForm.submit(); });
+    document.getElementById('submitButton').addEventListener('click', function(e) {
+        e.preventDefault();
+        MyForm.submit();
+    });
 })();
