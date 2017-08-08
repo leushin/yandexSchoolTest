@@ -75,7 +75,25 @@ var MyForm = {
         var randomKey = Math.floor(Math.random() * 3);
         return responses[randomKey];
     },
+    /**
+     * Возвращает гет строку из переданного объекта
+     * @param {Object} obj Объект
+     * @returns {String}
+     * @private
+     */
+    _makeGetString: function(obj) {
+        var getString = '';
+        var counter = 0;
+        var delimiter = '';
 
+        Object.keys(obj).forEach(function(key) {
+            delimiter = (counter) ? '&' : '';
+            getString += delimiter + key + '=' + obj[key];
+            counter++;
+        });
+
+        return getString;
+    },
     /**
      * Отправка данных аяксом
      * @private
@@ -83,6 +101,7 @@ var MyForm = {
     _sendAjax: function () {
         var xhr = new XMLHttpRequest();
         var _that = this;
+        var formData = this._makeGetString(this.getData());
 
         xhr.onload = function() {
             if(this.status === 200) {
@@ -100,7 +119,8 @@ var MyForm = {
                     case 'progress':
                         _that._components.resultContainer.className = 'progress';
                         setTimeout(function(){
-                            xhr.open('GET', 'responses/' + _that._getRandomResponse());
+                            xhr.open('GET', 'responses/' + _that._getRandomResponse() + '?' + formData);
+                            xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
                             xhr.send();
                         }, json.timeout);
                         break;
@@ -108,7 +128,8 @@ var MyForm = {
             }
         };
 
-        xhr.open('GET', document.getElementById('myForm').getAttribute('action'));
+        xhr.open('GET', document.getElementById('myForm').getAttribute('action') + '?' + formData);
+        xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
         xhr.send();
     },
 
@@ -152,10 +173,14 @@ var MyForm = {
      * @param {Object} object
      * @public
      */
-    setData: function(object) {
-        if (object.fio) this._components.fio.value = object.fio;
-        if (object.email) this._components.email.value = object.email;
-        if (object.phone) this._components.phone.value = object.phone;
+    setData: function(inputData) {
+
+        var realData = this.getData();
+        var settedData = Object.assign({}, realData, inputData);
+
+        this._components.fio.value = settedData.fio;
+        this._components.email.value = settedData.email;
+        this._components.phone.value = settedData.phone;
     },
 
     /**
